@@ -5,7 +5,7 @@
 // Si csvUrl esta vacio, se usaran los discos de ejemplo (DATOS_EJEMPLO) mas abajo.
 
 const CONFIG = {
-      csvUrl: "https://docs.google.com/spreadsheets/d/1-YiPX5Ea8x90toMwFGpuUi2cwcIlHAhNqSZ7G05yCvk/export?format=csv&gid=0",
+        csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ4G8zbkwARA27RiZl9gEH4ALSbIwzTiBfZNLkYRlvH7I1LfMn1IvpD8ClyeGs6NOsLP1PsthZRzJsi/pub?gid=0&single=true&output=csv",
   titulo: "La Estanteria"
 };
 

@@ -127,6 +127,13 @@ function pintarEstanteria(lista) {
       lomo.style.background = colorLomo(disco);
       lomo.title = disco.artista + " - " + disco.album;
 
+        if (disco.portada) {
+          const franja = document.createElement("div");
+          franja.className = "lomo-portada";
+          franja.style.backgroundImage = "url('" + disco.portada + "')";
+          lomo.appendChild(franja);
+        }
+
       const texto = document.createElement("span");
       texto.className = "lomo-texto";
       texto.textContent = disco.artista + " - " + disco.album;

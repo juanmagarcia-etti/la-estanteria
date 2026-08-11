@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>La Estanteria</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+<h1>La Estanteria</h1>
+<div class="controls">
+<input type="text" id="buscador" placeholder="Buscar artista o album...">
+<select id="filtroFormato">
+<option value="">Formato</option>
+<option value="Vinilo">Vinilo</option>
+<option value="CD">CD</option>
+<option value="Cassette">Cassette</option>
+</select>
+<select id="filtroGenero">
+<option value="">Genero</option>
+</select>
+<button id="btnAleatorio">Elige por mi</button>
+</div>
+</header>
+
+<main id="estanteria"></main>
+
+<div id="overlay" class="overlay oculto">
+<div class="ficha">
+<button id="cerrarFicha" class="cerrar">&times;</button>
+<div class="ficha-contenido">
+<img id="fichaPortada" src="" alt="">
+<div class="ficha-info">
+<h2 id="fichaAlbum"></h2>
+<h3 id="fichaArtista"></h3>
+<p id="fichaMeta"></p>
+<p id="fichaEstado"></p>
+<p id="fichaNotas"></p>
+<a id="fichaYoutube" href="#" target="_blank" class="boton-yt">Escuchar en YouTube Music</a>
+</div>
+</div>
+</div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

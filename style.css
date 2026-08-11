@@ -1,0 +1,243 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: radial-gradient(circle at top, #2b1d14 0%, #1a120b 60%, #100b07 100%);
+  color: #f1e4d0;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background: linear-gradient(180deg, #3b281a, #241609);
+  border-bottom: 4px solid #5a3b22;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  color: #e8c896;
+  text-shadow: 1px 1px 2px black;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.controls input, .controls select, .controls button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #6b4a2c;
+  background: #2a1c11;
+  color: #f1e4d0;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.controls button {
+  background: #7a4a20;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.controls button:hover {
+  background: #96601f;
+}
+
+#estanteria {
+  padding: 40px 30px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.balda {
+  position: relative;
+  padding: 25px 20px 35px;
+  background: linear-gradient(180deg, #3a2717, #2a1b0f);
+  border-radius: 6px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+}
+
+.balda::after {
+  content: '';
+  position: absolute;
+  left: -10px;
+  right: -10px;
+  bottom: -14px;
+  height: 14px;
+  background: linear-gradient(180deg, #4d3520, #1c1108);
+  border-radius: 4px;
+  box-shadow: 0 10px 18px rgba(0,0,0,0.6);
+}
+
+.balda-titulo {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #c9a06a;
+  margin: 0 0 18px 4px;
+}
+
+.lomos {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.lomo {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 190px;
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 10px 4px;
+  box-shadow: inset -3px 0 6px rgba(0,0,0,0.35), inset 3px 0 6px rgba(255,255,255,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+}
+
+.lomo:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 16px rgba(0,0,0,0.5);
+}
+
+.lomo.formato-cd {
+  width: 26px;
+  height: 150px;
+}
+
+.lomo.formato-cassette {
+  width: 30px;
+  height: 100px;
+}
+
+.lomo-texto {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.vacio {
+  color: #a58762;
+  font-style: italic;
+  padding: 10px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,6,3,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.overlay.oculto {
+  display: none;
+}
+
+.ficha {
+  background: linear-gradient(180deg, #2c1d12, #1c120a);
+  border: 1px solid #6b4a2c;
+  border-radius: 10px;
+  max-width: 700px;
+  width: 100%;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+.cerrar {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: #f1e4d0;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.ficha-contenido {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+#fichaPortada {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #10130f;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+.ficha-info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.ficha-info h2 {
+  margin: 0 0 4px;
+  color: #e8c896;
+}
+
+.ficha-info h3 {
+  margin: 0 0 12px;
+  color: #c9a06a;
+  font-weight: normal;
+}
+
+.ficha-info p {
+  margin: 6px 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.boton-yt {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 18px;
+  background: #a33a2b;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.boton-yt:hover {
+  background: #c94a37;
+}

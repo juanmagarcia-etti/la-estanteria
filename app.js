@@ -1,5 +1,4 @@
 // La Estanteria - logica principal
-
 let discos = [];
 
 function parseCSV(texto) {
@@ -36,20 +35,24 @@ function splitCSVLine(linea) {
 }
 
 function normalizarFila(fila) {
+  const generoRaw = fila.genero || "";
+  const generos = generoRaw.split("|").map(g => g.trim()).filter(Boolean);
+  if (generos.length === 0) generos.push("Coleccion");
   return {
     id: fila.id || (fila.artista + "-" + fila.album).toLowerCase().replace(/\s+/g, "-"),
     artista: fila.artista || "",
     album: fila.album || "",
     anio: fila.anio || fila["año"] || "",
     formato: fila.formato || "Vinilo",
-    genero: fila.genero || "",
+    generos: generos,
+    genero: generos[0],
     portada: fila.portada || fila.portada_url || "",
     youtube: fila.youtube || fila.youtube_music_url || "",
     estado: fila.estado || "",
     edicion: fila.edicion || "",
     notas: fila.notas || "",
     favorito: fila.favorito || "No",
-    balda: fila.balda || fila.seccion || fila.genero || "Coleccion"
+    balda: fila.balda || fila.seccion || generos[0] || "Coleccion"
   };
 }
 
@@ -82,7 +85,7 @@ function claseFormato(formato) {
 
 function colorLomo(disco) {
   const paleta = ["#7a3b2e", "#5c4326", "#3d5a4c", "#4a3b5c", "#6b5327", "#2f4858", "#7a4a20", "#5a2e3d"];
-  const base = (disco.genero || disco.balda || disco.artista || "x");
+  const base = disco.genero || disco.artista || "x";
   let hash = 0;
   for (let i = 0; i < base.length; i++) hash = (hash * 31 + base.charCodeAt(i)) % paleta.length;
   return paleta[Math.abs(hash) % paleta.length];
@@ -91,9 +94,10 @@ function colorLomo(disco) {
 function agruparPorBalda(lista) {
   const grupos = {};
   lista.forEach(disco => {
-    const clave = disco.balda || "Coleccion";
-    if (!grupos[clave]) grupos[clave] = [];
-    grupos[clave].push(disco);
+    disco.generos.forEach(g => {
+      if (!grupos[g]) grupos[g] = [];
+      grupos[g].push(disco);
+    });
   });
   return grupos;
 }
@@ -101,48 +105,38 @@ function agruparPorBalda(lista) {
 function pintarEstanteria(lista) {
   const cont = document.getElementById("estanteria");
   cont.innerHTML = "";
-
   if (lista.length === 0) {
     cont.innerHTML = '<p class="vacio">No hay discos que coincidan con la busqueda.</p>';
     return;
   }
-
   const grupos = agruparPorBalda(lista);
-
   Object.keys(grupos).sort().forEach(nombreBalda => {
     const balda = document.createElement("section");
     balda.className = "balda";
-
     const titulo = document.createElement("h2");
     titulo.className = "balda-titulo";
     titulo.textContent = nombreBalda;
     balda.appendChild(titulo);
-
     const filaLomos = document.createElement("div");
     filaLomos.className = "lomos";
-
     grupos[nombreBalda].forEach(disco => {
       const lomo = document.createElement("div");
       lomo.className = "lomo " + claseFormato(disco.formato);
       lomo.style.background = colorLomo(disco);
       lomo.title = disco.artista + " - " + disco.album;
-
-        if (disco.portada) {
-          const franja = document.createElement("div");
-          franja.className = "lomo-portada";
-          franja.style.backgroundImage = "url('" + disco.portada + "')";
-          lomo.appendChild(franja);
-        }
-
+      if (disco.portada) {
+        const franja = document.createElement("div");
+        franja.className = "lomo-portada";
+        franja.style.backgroundImage = "url('" + disco.portada + "')";
+        lomo.appendChild(franja);
+      }
       const texto = document.createElement("span");
       texto.className = "lomo-texto";
       texto.textContent = disco.artista + " - " + disco.album;
       lomo.appendChild(texto);
-
       lomo.addEventListener("click", () => abrirFicha(disco));
       filaLomos.appendChild(lomo);
     });
-
     balda.appendChild(filaLomos);
     cont.appendChild(balda);
   });
@@ -151,10 +145,9 @@ function pintarEstanteria(lista) {
 function abrirFicha(disco) {
   document.getElementById("fichaAlbum").textContent = disco.album;
   document.getElementById("fichaArtista").textContent = disco.artista;
-  document.getElementById("fichaMeta").textContent = [disco.formato, disco.anio, disco.genero].filter(Boolean).join(" · ");
+  document.getElementById("fichaMeta").textContent = [disco.formato, disco.anio, disco.generos.join(" / ")].filter(Boolean).join(" · ");
   document.getElementById("fichaEstado").textContent = [disco.estado, disco.edicion].filter(Boolean).join(" · ");
   document.getElementById("fichaNotas").textContent = disco.notas || "";
-
   const img = document.getElementById("fichaPortada");
   if (disco.portada) {
     img.src = disco.portada;
@@ -162,7 +155,6 @@ function abrirFicha(disco) {
   } else {
     img.style.display = "none";
   }
-
   const enlace = document.getElementById("fichaYoutube");
   if (disco.youtube) {
     enlace.href = disco.youtube;
@@ -171,7 +163,6 @@ function abrirFicha(disco) {
     enlace.href = "https://music.youtube.com/search?q=" + encodeURIComponent(disco.artista + " " + disco.album);
     enlace.style.display = "inline-block";
   }
-
   document.getElementById("overlay").classList.remove("oculto");
 }
 
@@ -181,8 +172,9 @@ function cerrarFicha() {
 
 function rellenarGeneros() {
   const select = document.getElementById("filtroGenero");
-  const generos = Array.from(new Set(discos.map(d => d.genero).filter(Boolean))).sort();
-  generos.forEach(g => {
+  const todosGeneros = [];
+  discos.forEach(d => d.generos.forEach(g => { if (g && !todosGeneros.includes(g)) todosGeneros.push(g); }));
+  todosGeneros.sort().forEach(g => {
     const opt = document.createElement("option");
     opt.value = g;
     opt.textContent = g;
@@ -194,14 +186,12 @@ function aplicarFiltros() {
   const texto = document.getElementById("buscador").value.toLowerCase().trim();
   const formato = document.getElementById("filtroFormato").value;
   const genero = document.getElementById("filtroGenero").value;
-
   const filtrados = discos.filter(d => {
     const coincideTexto = !texto || (d.artista + " " + d.album).toLowerCase().includes(texto);
     const coincideFormato = !formato || d.formato === formato;
-    const coincideGenero = !genero || d.genero === genero;
+    const coincideGenero = !genero || d.generos.includes(genero);
     return coincideTexto && coincideFormato && coincideGenero;
   });
-
   pintarEstanteria(filtrados);
 }
 
@@ -209,19 +199,16 @@ function elegirAleatorio() {
   const texto = document.getElementById("buscador").value.toLowerCase().trim();
   const formato = document.getElementById("filtroFormato").value;
   const genero = document.getElementById("filtroGenero").value;
-
   const filtrados = discos.filter(d => {
     const coincideTexto = !texto || (d.artista + " " + d.album).toLowerCase().includes(texto);
     const coincideFormato = !formato || d.formato === formato;
-    const coincideGenero = !genero || d.genero === genero;
+    const coincideGenero = !genero || d.generos.includes(genero);
     return coincideTexto && coincideFormato && coincideGenero;
   });
-
   if (filtrados.length === 0) {
     alert("No hay discos que coincidan con los filtros actuales.");
     return;
   }
-
   const elegido = filtrados[Math.floor(Math.random() * filtrados.length)];
   abrirFicha(elegido);
 }
@@ -229,7 +216,6 @@ function elegirAleatorio() {
 function iniciar() {
   rellenarGeneros();
   pintarEstanteria(discos);
-
   document.getElementById("buscador").addEventListener("input", aplicarFiltros);
   document.getElementById("filtroFormato").addEventListener("change", aplicarFiltros);
   document.getElementById("filtroGenero").addEventListener("change", aplicarFiltros);

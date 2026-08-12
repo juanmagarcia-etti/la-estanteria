@@ -36,7 +36,7 @@ function splitCSVLine(linea) {
 
 function normalizarFila(fila) {
   const generoRaw = fila.genero || "";
-    const generos = generoRaw.split(/\s*;\s*/).map(g => g.trim()).filter(Boolean);
+      const generos = generoRaw.split(/\s*[;|]\s*/).map(g => g.trim()).filter(Boolean);
   if (generos.length === 0) generos.push("Coleccion");
   return {
     id: fila.id || (fila.artista + "-" + fila.album).toLowerCase().replace(/\s+/g, "-"),
